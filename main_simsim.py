@@ -149,17 +149,23 @@ def train_one_epoch(config, model, data_loader, optimizer, epoch, lr_scheduler):
         model_loss = rev_PixelShuffle(model_loss, config.MODEL.VIT.PATCH_SIZE)
         eye_mat = torch.eye(sp_sketch_invsketch.shape[1]).cuda(non_blocking=True)
         C_Sketch_invSketch = eye_mat - sp_sketch_invsketch
-        model_loss = torch.matmul(model_loss.flatten(2), C_Sketch_invSketch)
+
+
+        # Division option 1
+        model_loss = torch.matmul(model_loss.flatten(2), C_Sketch_invSketch) / (
+                C_Sketch_invSketch.sum((1, 2)).abs().view(-1, 1, 1) + 1e-5)
+        model_loss = model_loss.abs().sum() / config.DATA.BATCH_SIZE / config.MODEL.VIT.IN_CHANS
+
+        # Division option 2
+        # torch.numel(C_Sketch_invSketch[0])
+        # Division option 3
+        # C_Sketch_invSketch.sum().abs() + 1e-5)
+
+        # Try DC mat
         # DC_mat=torch.matmul(torch.ones(model_loss.flatten(2).size()).cuda(non_blocking=True), C_Sketch_invSketch).mean((1,2))
         # model_loss = torch.matmul(model_loss.flatten(2), C_Sketch_invSketch) / (
         #         DC_mat.view(-1,1,1) + 1e-5)  # (C_Sketch_invSketch.sum((1,2)).abs()+1e-5)
-        model_loss = torch.matmul(model_loss.flatten(2), C_Sketch_invSketch) / (
-                C_Sketch_invSketch.sum((1,2)).abs().view(-1,1,1) + 1e-5)  #
-        model_loss = model_loss.abs().sum() / config.DATA.BATCH_SIZE / config.MODEL.VIT.IN_CHANS
-
-        # model_loss = F.l1_loss(model_loss, model_loss*0, reduction='sum') /torch.numel(C_Sketch_invSketch[0])
-        # (C_Sketch_invSketch.sum().abs() + 1e-5)
-        # C_Sketch_invSketch.sum((1, 2)).abs().view(-1, 1, 1) + 1e-5)
+        ##########################
 
         optimizer.zero_grad()
         model_loss.backward()
