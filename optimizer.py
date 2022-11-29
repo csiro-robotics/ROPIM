@@ -1,9 +1,6 @@
 # --------------------------------------------------------
-# SimMIM
-# Copyright (c) 2021 Microsoft
-# Licensed under The MIT License [see LICENSE for details]
-# Written by Ze Liu
-# Modified by Zhenda Xie
+# SimSIM
+# cite: https://github.com/microsoft/SimMIM
 # --------------------------------------------------------
 
 import json
@@ -68,16 +65,10 @@ def get_pretrain_param_groups(model, logger, skip_list=(), skip_keywords=()):
 
 def build_finetune_optimizer(config, model, logger):
     logger.info('>>>>>>>>>> Build Optimizer for Fine-tuning Stage')
-    if config.MODEL.TYPE == 'swin':
-        depths = config.MODEL.SWIN.DEPTHS
-        num_layers = sum(depths)
-        get_layer_func = partial(get_swin_layer, num_layers=num_layers + 2, depths=depths)
-    elif config.MODEL.TYPE == 'vit':
-        num_layers = config.MODEL.VIT.DEPTH
-        get_layer_func = partial(get_vit_layer, num_layers=num_layers + 2)
-    else:
-        raise NotImplementedError
-    
+
+    num_layers = config.MODEL.VIT.DEPTH
+    get_layer_func = partial(get_vit_layer, num_layers=num_layers + 2)
+
     scales = list(config.TRAIN.LAYER_DECAY ** i for i in reversed(range(num_layers + 2)))
     
     skip = {}
@@ -119,21 +110,6 @@ def get_vit_layer(name, num_layers):
     else:
         return num_layers - 1
 
-
-def get_swin_layer(name, num_layers, depths):
-    if name in ("mask_token"):
-        return 0
-    elif name.startswith("patch_embed"):
-        return 0
-    elif name.startswith("layers"):
-        layer_id = int(name.split('.')[1])
-        block_id = name.split('.')[3]
-        if block_id == 'reduction' or block_id == 'norm':
-            return sum(depths[:layer_id + 1])
-        layer_id = sum(depths[:layer_id]) + int(block_id)
-        return layer_id + 1
-    else:
-        return num_layers - 1
 
 
 def get_finetune_param_groups(model, logger, lr, weight_decay, get_layer_func, scales, skip_list=(), skip_keywords=()):

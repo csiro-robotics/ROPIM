@@ -1,9 +1,6 @@
 # --------------------------------------------------------
-# SimMIM
-# Copyright (c) 2021 Microsoft
-# Licensed under The MIT License [see LICENSE for details]
-# Written by Ze Liu
-# Modified by Zhenda Xie
+# SimSIM
+# cite: https://github.com/microsoft/SimMIM
 # --------------------------------------------------------
 
 from collections import Counter
