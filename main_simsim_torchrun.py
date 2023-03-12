@@ -62,7 +62,7 @@ def parse_option():
     parser.add_argument('--amp-opt-level', type=str, default='O0', choices=['O0', 'O1', 'O2'],
                         help='mixed precision opt level, if O0, no amp is used')
     # distributed training
-    parser.add_argument("--local_rank", type=int, default=0, help='local rank for DistributedDataParallel')
+    parser.add_argument("--local_rank", type=int, help='local rank for DistributedDataParallel')
     parser.add_argument('--world_size', default=4, type=int,
                         help='number of distributed processes')
     parser.add_argument('--dist_on_itp', action='store_true')
@@ -81,7 +81,7 @@ def main(config):
 
     optimizer = build_optimizer(config, model, logger, is_pretrain=True)
 
-    model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[config.LOCAL_RANK], broadcast_buffers=False)
+    model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[os.environ["LOCAL_RANK"]], broadcast_buffers=False)
     model_without_ddp = model.module
 
     n_parameters = sum(p.numel() for p in model.parameters() if p.requires_grad)
@@ -228,9 +228,9 @@ if __name__ == '__main__':
     else:
         rank = -1
         world_size = -1
-    torch.cuda.set_device(config.LOCAL_RANK)
-    # os.environ["NCCL_ASYNC_ERROR_HANDLING"]=1 timeout=datetime.timedelta(seconds=3600),
-    torch.distributed.init_process_group(backend='nccl', init_method='env://',  world_size=world_size, rank=rank)
+        
+    torch.cuda.set_device(os.environ["LOCAL_RANK"])
+    torch.distributed.init_process_group(backend='nccl', init_method='env://', world_size=world_size, rank=rank)
     torch.distributed.barrier()
 
     seed = config.SEED + dist.get_rank()

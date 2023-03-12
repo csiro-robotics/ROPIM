@@ -52,11 +52,11 @@ class SketchGenerator:
             return None
 
         if torch.rand(1) > float(self.threshold):
-            self.sketching_ratio = .5
+            self.sketching_ratio = .14
         else:
             self.sketching_ratio = .25
 
-        self.n_size_out = int(self.n_size_in * self.sketching_ratio)
+        self.n_size_out = int(np.ceil(self.n_size_in * self.sketching_ratio))
         sketch_mat = self.create_sketch_mat(self.n_size_in , self.n_size_out, "cpu")
         sketch_invsketch =torch.matmul(sketch_mat, sketch_mat.t() * self.sketching_ratio)
 

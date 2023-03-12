@@ -4,6 +4,7 @@ MODEL:
   DROP_PATH_RATE: 0.1
   VIT:
     EMBED_DIM: 192
+    PATCH_SIZE: 4 # (Org: 16, ADIOS setting: 4)
     DEPTH: 12
     NUM_HEADS: 3
     USE_APE: False
@@ -11,7 +12,8 @@ MODEL:
     USE_SHARED_RPB: False
     USE_MEAN_POOLING: True
 DATA:
-  IMG_SIZE: 224
+  IMG_SIZE: 64 #(Org: 224, ADIOS setting: 64)
+
 AUG:
   COLOR_JITTER: .4
   AUTO_AUGMENT: None #'rand-m9-mstd0.5-inc1'

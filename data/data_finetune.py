@@ -60,20 +60,52 @@ def build_loader_finetune(config, logger):
 
     return dataset_train, dataset_val, data_loader_train, data_loader_val, mixup_fn
 
-
 def build_dataset(is_train, config, logger):
     transform = build_transform(is_train, config)
     logger.info(f'Fine-tune data transform, is_train={is_train}:\n{transform}')
 
-    if config.DATA.DATASET == 'imagenet100':
+    if config.DATA.DATASET == 'imagenet':
+        prefix = 'train' if is_train else 'validation'
+        root = os.path.join(config.DATA.DATA_PATH, prefix)
+        dataset = datasets.ImageFolder(root, transform=transform)
+        nb_classes = 1000  
+
+    elif config.DATA.DATASET == 'imagenet100':
         prefix = 'train' if is_train else 'val'
         root = os.path.join(config.DATA.DATA_PATH, prefix)
         dataset = datasets.ImageFolder(root, transform=transform)
-        nb_classes = 100  # for birds
+        nb_classes = 100  
+    elif config.DATA.DATASET == 'CUB':
+        prefix = 'train' if is_train else 'val'
+        root = os.path.join(config.DATA.DATA_PATH, prefix)
+        dataset = datasets.ImageFolder(root, transform=transform)
+        nb_classes = 200
+    elif config.DATA.DATASET == 'flowers102':
+        prefix = 'train' if is_train else 'val'
+        dataset = datasets.Flowers102(root=config.DATA.DATA_PATH, download=False, transform=transform)
+        nb_classes = 102 
+    elif config.DATA.DATASET == 'inat17':
+        if is_train:
+            split='train'
+        else:
+            split='val'
+        dataset=INat2017(root='/datasets/work/mlaifsp-st-d61/source/iNaturalist', split=split, transform=transform)
+
+        nb_classes=13    
+
+    elif config.DATA.DATASET == 'cifar100':
+        dataset = datasets.CIFAR100(root=config.DATA.DATA_PATH,  train=is_train, download=False, transform=transform)
+        nb_classes=100
+
+    elif config.DATA.DATASET == 'cifar10':
+        dataset = datasets.CIFAR100(root=config.DATA.DATA_PATH,  train=is_train, download=False, transform=transform)
+        nb_classes=10
+
     else:
         raise NotImplementedError("We only support ImageNet Now.")
 
     return dataset, nb_classes
+
 
 
 def build_dataset_CIFAR(is_train, config, logger):

@@ -8,12 +8,6 @@ import torch.nn as nn
 from timm.models.layers import trunc_normal_
 from .vision_transformer import VisionTransformer
 
-def rev_PixelShuffle(x, r):
-    [B, C, H, W] = list(x.size())
-    x = x.reshape(B, C, H//r, r, W//r, r)
-    x = x.permute(0, 1, 3, 5, 2, 4)
-    x = x.reshape(B, C*(r**2), H//r, W//r)
-    return x
 
 class VisionTransformerForSimSIM(VisionTransformer):
     def __init__(self, sp=False, **kwargs):
