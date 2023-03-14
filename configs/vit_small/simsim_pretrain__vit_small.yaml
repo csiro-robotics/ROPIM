@@ -1,0 +1,29 @@
+MODEL:
+  TYPE: vit
+  NAME: simsim_pretrain
+  DROP_PATH_RATE: 0.1
+  VIT:
+    EMBED_DIM: 384
+    PATCH_SIZE: 16
+    DEPTH: 12
+    NUM_HEADS: 6
+    USE_APE: False
+    USE_RPB: False
+    USE_SHARED_RPB: True
+    USE_MEAN_POOLING: False
+DATA:
+  IMG_SIZE: 224
+
+TRAIN:
+  EPOCHS: 300
+  WARMUP_EPOCHS: 10
+  BASE_LR: 1.25e-5 #1.25e-5 #1e-4, 5e-5 #
+  WARMUP_LR: 5e-7
+  WEIGHT_DECAY: 0.05
+  LR_SCHEDULER:
+    NAME: 'multistep'
+    GAMMA: 0.1
+    MULTISTEPS: [700,]
+PRINT_FREQ: 100
+SAVE_FREQ: 5
+TAG: simsim_pretrain__vit_base__img224__800ep
