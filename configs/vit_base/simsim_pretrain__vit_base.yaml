@@ -23,7 +23,7 @@ TRAIN:
   LR_SCHEDULER:
     NAME: 'multistep'
     GAMMA: 0.1
-    MULTISTEPS: [700,]
+    MULTISTEPS: [150,]
 PRINT_FREQ: 100
 SAVE_FREQ: 5
 TAG: simsim_pretrain__vit_base__img224__800ep
