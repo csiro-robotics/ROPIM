@@ -18,7 +18,7 @@ export MASTER_PORT=$master_port
 
 . "/d/sw/miniconda3/4.8.3/etc/profile.d/conda.sh"
 conda activate /data/csiro_od219033/sw/venv/hs
-srun sh -c 'python -m torch.distributed.launch --master_port 12346 --nproc_per_node 4 main_simsim.py \
+srun sh -c 'python -m torch.distributed.launch --master_port 12346 --nproc_per_node 4 main_finetune.py \
 --world_size 8 --batch-size 380 --data-path /data/csiro_od219033/imagenet \
 --cfg configs/vit_small/simsim_finetune__vit_small.yaml \
 --pretrained output/simsim_pretrain/simsim_pretrain_vit_small_imgnet_sp1SkR.14_LR1.25-5_LossDividedSum1_2_200LossMean_multinode_300e/ckpt_epoch_299.pth \
