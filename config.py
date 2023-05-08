@@ -233,6 +233,9 @@ def update_config(config, args):
         config.dist_on_itp = True
     if _check_args('auto_resume'):
         config.TRAIN.AUTO_RESUME = True
+    if _check_args('dataset'):
+        config.DATA.DATASET = args.dataset
+
 
     # set sketching params
     if _check_args('Spatial_Sketching_Threshold'):

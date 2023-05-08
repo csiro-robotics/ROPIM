@@ -24,4 +24,4 @@ TRAIN:
   LAYER_DECAY: 0.65 # 0.65
 PRINT_FREQ: 100
 SAVE_FREQ: 5
-TAG: simsim_finetune__vit_base__img224__800ep
+TAG: simsim_finetune__vit_base__img224

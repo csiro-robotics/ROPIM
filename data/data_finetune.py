@@ -90,8 +90,8 @@ def build_dataset(is_train, config, logger):
         else:
             split='val'
         dataset=INat2017(root='/datasets/work/mlaifsp-st-d61/source/iNaturalist', split=split, transform=transform)
-
-        nb_classes=13    
+        nb_classes= 5089
+        # nb_classes=13    
 
     elif config.DATA.DATASET == 'cifar100':
         dataset = datasets.CIFAR100(root=config.DATA.DATA_PATH,  train=is_train, download=False, transform=transform)
@@ -181,9 +181,9 @@ class INat2017(VisionDataset):
 
         self.annos = all_annos['annotations']
         self.images = all_annos['images']
-
-        self.cat_ids = {'Plantae': 0, 'Insecta': 1, 'Aves': 2, 'Reptilia': 3, 'Mammalia': 4, 'Fungi':5, 'Amphibia': 6,
-                        'Mollusca': 7, 'Animalia': 8, 'Arachnida': 9, 'Actinopterygii': 10, 'Chromista': 11, 'Protozoa': 12}
+        print('LEN of CAT IDs:', len(self.cat_ids))
+        # self.cat_ids = {'Plantae': 0, 'Insecta': 1, 'Aves': 2, 'Reptilia': 3, 'Mammalia': 4, 'Fungi':5, 'Amphibia': 6,
+        #                 'Mollusca': 7, 'Animalia': 8, 'Arachnida': 9, 'Actinopterygii': 10, 'Chromista': 11, 'Protozoa': 12}
 
     def __getitem__(self, index):
         path = os.path.join(self.root, self.images[index]['file_name'])

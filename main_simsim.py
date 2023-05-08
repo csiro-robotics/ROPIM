@@ -62,7 +62,7 @@ def parse_option():
     parser.add_argument('--amp-opt-level', type=str, default='O0', choices=['O0', 'O1', 'O2'],
                         help='mixed precision opt level, if O0, no amp is used')
     # distributed training
-    parser.add_argument("--local_rank", type=int, default=0, help='local rank for DistributedDataParallel')
+    parser.add_argument("--local_rank", type=int, help='local rank for DistributedDataParallel')
     parser.add_argument('--world_size', default=4, type=int,
                         help='number of distributed processes')
     parser.add_argument('--dist_on_itp', action='store_true')
