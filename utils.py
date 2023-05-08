@@ -241,6 +241,7 @@ def _get_world_size_env():
 
 
 def init_distributed_mode(args):
+
     if args.dist_on_itp:
         args.rank = _get_rank_env()
         args.world_size = _get_world_size_env()  # int(os.environ['OMPI_COMM_WORLD_SIZE'])
@@ -256,9 +257,16 @@ def init_distributed_mode(args):
         args.rank = int(os.environ["RANK"])
         args.world_size = int(os.environ['WORLD_SIZE'])
         args.gpu = int(os.environ['LOCAL_RANK'])
+
     elif 'SLURM_PROCID' in os.environ:
-        args.rank = int(os.environ['SLURM_PROCID'])
-        args.gpu = args.rank % torch.cuda.device_count()
+
+        hostnames = hostlist.expand_hostlist(os.environ["SLURM_JOB_NODELIST"])
+        os.environ["MASTER_PORT"] = str(19865)
+        os.environ["MASTER_ADDR"] = hostnames[0]
+        args.rank = int(os.environ["SLURM_PROCID"])
+        args.world_size = int(os.environ['SLURM_NTASKS'])
+        args.gpu = int(os.environ['SLURM_LOCALID'])
+        # print("Master Address : ", os.environ["MASTER_ADDR"])
 
     else:
         print('Not using distributed mode')
