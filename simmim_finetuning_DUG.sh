@@ -16,6 +16,6 @@ srun sh -c 'python main_finetune.py \
 --world_size 8 --batch-size 380 --data-path /data/csiro_od219033/imagenet \
 --cfg configs/vit_base/simsim_finetune__vit_base.yaml \
 --pretrained output/simsim_pretrain/simsim_pretrain_vit_base_imgnet_sp1SkR.14_LR1.25-5_LossDividedSum1_2_200LossMean_multinode_300e/ckpt_epoch_299.pth \
---tag simsim_finetune_vit_base_imgnet_sp1SkR.14_LR1.25-5_LossDividedSum1_2_200LossMean_multinode_300e_imgnet_100e-corrected'
+--tag simsim_finetune_vit_base_imgnet_sp1SkR.14_LR2.5-5_LossDividedSum1_2_200LossMean_ch300_imgnet_FTLR8-3'
 # threshold 2 => .14
 # threshold -1 => .07
