@@ -17,11 +17,11 @@ AUG:
 TRAIN:
   EPOCHS: 100
   WARMUP_EPOCHS: 20
-  BASE_LR: 5e-3 #8.0e-4  #1.25e-3 # 2.5e-3 #
+  BASE_LR: 8e-3 #8.0e-4  #1.25e-3 # 2.5e-3 #
   WARMUP_LR: 2.5e-7
   MIN_LR: 2.5e-7
   WEIGHT_DECAY: 0.05
-  LAYER_DECAY: 0.55 # 0.65
+  LAYER_DECAY: 0.65 # 0.65
 PRINT_FREQ: 100
 SAVE_FREQ: 5
 TAG: simsim_finetune__vit_base__img224
