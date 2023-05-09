@@ -215,39 +215,39 @@ def train_one_epoch(config, model, data_loader, optimizer, epoch, lr_scheduler):
     logger.info(f"EPOCH {epoch} training takes {datetime.timedelta(seconds=int(epoch_time))}")
 
 
+# if __name__ == '__main__':
+#     _, config = parse_option()
+#
+#     if config.AMP_OPT_LEVEL != "O0":
+#         assert amp is not None, "amp not installed!"
+#
+#     if 'RANK' in os.environ and 'WORLD_SIZE' in os.environ:
+#         rank = int(os.environ["RANK"])
+#         world_size = int(os.environ['WORLD_SIZE'])
+#         print(f"RANK and WORLD_SIZE in environ: {rank}/{world_size}")
+#     else:
+#         rank = -1
+#         world_size = -1
+#     torch.cuda.set_device(config.LOCAL_RANK)
+#     # os.environ["NCCL_ASYNC_ERROR_HANDLING"]=1 timeout=datetime.timedelta(seconds=3600),
+#     torch.distributed.init_process_group(backend='nccl', init_method='env://',  world_size=world_size, rank=rank)
+#     torch.distributed.barrier()
+#
+#     seed = config.SEED + dist.get_rank()
+#     torch.manual_seed(seed)
+#     np.random.seed(seed)
+#     cudnn.benchmark = True
+
+
 if __name__ == '__main__':
     _, config = parse_option()
-
-    if config.AMP_OPT_LEVEL != "O0":
-        assert amp is not None, "amp not installed!"
-
-    if 'RANK' in os.environ and 'WORLD_SIZE' in os.environ:
-        rank = int(os.environ["RANK"])
-        world_size = int(os.environ['WORLD_SIZE'])
-        print(f"RANK and WORLD_SIZE in environ: {rank}/{world_size}")
-    else:
-        rank = -1
-        world_size = -1
-    torch.cuda.set_device(config.LOCAL_RANK)
-    # os.environ["NCCL_ASYNC_ERROR_HANDLING"]=1 timeout=datetime.timedelta(seconds=3600),
-    torch.distributed.init_process_group(backend='nccl', init_method='env://',  world_size=world_size, rank=rank)
-    torch.distributed.barrier()
+    init_distributed_mode(config)
+    device = torch.device('cuda')
 
     seed = config.SEED + dist.get_rank()
     torch.manual_seed(seed)
     np.random.seed(seed)
     cudnn.benchmark = True
-
-
-# if __name__ == '__main__':
-#     _, config = parse_option()
-#     init_distributed_mode(config)
-#     device = torch.device('cuda')
-
-#     seed = config.SEED + dist.get_rank()
-#     torch.manual_seed(seed)
-#     np.random.seed(seed)
-#     cudnn.benchmark = True
 
     # Apply a linear learning rate rule based on total batch size, Note: not optimal
     linear_scaled_lr = config.TRAIN.BASE_LR * config.DATA.BATCH_SIZE * dist.get_world_size() / 512.0
