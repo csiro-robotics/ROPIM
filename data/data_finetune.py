@@ -82,7 +82,7 @@ def build_dataset(is_train, config, logger):
         nb_classes = 200
     elif config.DATA.DATASET == 'flowers102':
         prefix = 'train' if is_train else 'val'
-        dataset = datasets.Flowers102(root=config.DATA.DATA_PATH, download=False, transform=transform)
+        dataset = datasets.Flowers102(root=config.DATA.DATA_PATH, split=prefix, download=False, transform=transform)
         nb_classes = 102 
     elif config.DATA.DATASET == 'inat17':
         if is_train:
