@@ -123,7 +123,7 @@ _C.AUG = CN()
 # Color jitter factor
 _C.AUG.COLOR_JITTER = 0.4
 # Use AutoAugment policy. "v0" or "original"
-_C.AUG.AUTO_AUGMENT = None #'rand-m9-mstd0.5-inc1'
+_C.AUG.AUTO_AUGMENT = 'rand-m9-mstd0.5-inc1'
 # Random erase prob
 _C.AUG.REPROB = 0.25
 # Random erase mode

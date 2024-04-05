@@ -8,7 +8,6 @@ import torch
 import torch.distributed as dist
 import numpy as np
 from scipy import interpolate
-import hostlist
 
 try:
     # noinspection PyUnresolvedReferences
@@ -257,16 +256,6 @@ def init_distributed_mode(args):
         args.rank = int(os.environ["RANK"])
         args.world_size = int(os.environ['WORLD_SIZE'])
         args.gpu = int(os.environ['LOCAL_RANK'])
-
-    elif 'SLURM_PROCID' in os.environ:
-
-        hostnames = hostlist.expand_hostlist(os.environ["SLURM_JOB_NODELIST"])
-        os.environ["MASTER_PORT"] = str(19865)
-        os.environ["MASTER_ADDR"] = hostnames[0]
-        args.rank = int(os.environ["SLURM_PROCID"])
-        args.world_size = int(os.environ['SLURM_NTASKS'])
-        args.gpu = int(os.environ['SLURM_LOCALID'])
-        # print("Master Address : ", os.environ["MASTER_ADDR"])
 
     else:
         print('Not using distributed mode')
