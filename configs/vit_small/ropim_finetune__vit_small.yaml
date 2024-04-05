@@ -1,6 +1,6 @@
 MODEL:
   TYPE: vit
-  NAME: simsim_finetune
+  NAME: ropim_finetune
   DROP_PATH_RATE: 0.1
   VIT:
     EMBED_DIM: 384
@@ -24,4 +24,4 @@ TRAIN:
   LAYER_DECAY: 0.65 # 0.65
 PRINT_FREQ: 100
 SAVE_FREQ: 5
-TAG: simsim_finetune__vit_base__img224__800ep
+TAG: ropim_finetune__vit_base__img224__800ep

@@ -1,5 +1,5 @@
 # --------------------------------------------------------
-# SimSIM
+# ROPIM
 # Written by Maryam Haghighat
 # --------------------------------------------------------
 
@@ -23,7 +23,7 @@ from utils import load_checkpoint, save_checkpoint, get_grad_norm, auto_resume_h
 import torch.nn.functional as F
 from torchvision.utils import save_image
 from torchvision import transforms as T
-
+import kornia.filters.sobel as sobel
 
 def str2bool(v):
   return v.lower() in ('true', '1')
@@ -38,7 +38,7 @@ def rev_PixelShuffle(x, r):
 
 
 def parse_option():
-    parser = argparse.ArgumentParser('SimSIM pre-training', add_help=False)
+    parser = argparse.ArgumentParser('ROPIM pre-training', add_help=False)
     parser.add_argument('--cfg', type=str,  metavar="FILE", help='path to config file', )
     parser.add_argument(
         "--opts",
@@ -81,7 +81,7 @@ def main(config):
 
     optimizer = build_optimizer(config, model, logger, is_pretrain=True)
 
-    model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[os.environ["LOCAL_RANK"]], broadcast_buffers=False)
+    model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[config.LOCAL_RANK], broadcast_buffers=False)
     model_without_ddp = model.module
 
     n_parameters = sum(p.numel() for p in model.parameters() if p.requires_grad)
@@ -145,17 +145,21 @@ def train_one_epoch(config, model, data_loader, optimizer, epoch, lr_scheduler):
 
         img_rec = model(img_org, sp_sketch_invsketch)
         model_loss = img_org - img_rec
-
         model_loss = rev_PixelShuffle(model_loss, config.MODEL.VIT.PATCH_SIZE)
         eye_mat = torch.eye(sp_sketch_invsketch.shape[1]).cuda(non_blocking=True)
         C_Sketch_invSketch = eye_mat - sp_sketch_invsketch
 
 
-        # Division option 1
-        model_loss = torch.matmul(model_loss.flatten(2), C_Sketch_invSketch) / (
-                C_Sketch_invSketch.sum((1, 2)).abs().view(-1, 1, 1) + 1e-5)
-        model_loss = model_loss.abs().mean()*200 #/ config.DATA.BATCH_SIZE / config.MODEL.VIT.IN_CHANS
+        # # Division option 1
+        # model_loss = torch.matmul(model_loss.flatten(2), C_Sketch_invSketch) / (
+        #         C_Sketch_invSketch.sum((1, 2)).abs().view(-1, 1, 1) + 1e-5)
+        # model_loss = model_loss.abs().mean()*200 #/ config.DATA.BATCH_SIZE / config.MODEL.VIT.IN_CHANS
 
+
+        # No division
+        model_loss = torch.matmul(model_loss.flatten(2), C_Sketch_invSketch)
+        model_loss = model_loss.abs().mean() #/ config.DATA.BATCH_SIZE / config.MODEL.VIT.IN_CHANS
+       
         # Division option 2
         # model_loss = torch.matmul(model_loss.flatten(2), C_Sketch_invSketch)
         # model_loss = model_loss.abs().mean() * 40000 / (
@@ -228,9 +232,9 @@ if __name__ == '__main__':
     else:
         rank = -1
         world_size = -1
-        
-    torch.cuda.set_device(os.environ["LOCAL_RANK"])
-    torch.distributed.init_process_group(backend='nccl', init_method='env://', world_size=world_size, rank=rank)
+    torch.cuda.set_device(config.LOCAL_RANK)
+    # os.environ["NCCL_ASYNC_ERROR_HANDLING"]=1 timeout=datetime.timedelta(seconds=3600),
+    torch.distributed.init_process_group(backend='nccl', init_method='env://',  world_size=world_size, rank=rank)
     torch.distributed.barrier()
 
     seed = config.SEED + dist.get_rank()

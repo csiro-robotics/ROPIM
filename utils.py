@@ -1,5 +1,5 @@
 # --------------------------------------------------------
-# SimSIM
+# ROPIM
 # Partly based on SimMIM code: https://github.com/microsoft/SimMIM
 # --------------------------------------------------------
 
@@ -8,6 +8,7 @@ import torch
 import torch.distributed as dist
 import numpy as np
 from scipy import interpolate
+import hostlist
 
 try:
     # noinspection PyUnresolvedReferences
@@ -240,7 +241,6 @@ def _get_world_size_env():
 
 
 def init_distributed_mode(args):
-
     if args.dist_on_itp:
         args.rank = _get_rank_env()
         args.world_size = _get_world_size_env()  # int(os.environ['OMPI_COMM_WORLD_SIZE'])
@@ -256,6 +256,9 @@ def init_distributed_mode(args):
         args.rank = int(os.environ["RANK"])
         args.world_size = int(os.environ['WORLD_SIZE'])
         args.gpu = int(os.environ['LOCAL_RANK'])
+    elif 'SLURM_PROCID' in os.environ:
+        args.rank = int(os.environ['SLURM_PROCID'])
+        args.gpu = args.rank % torch.cuda.device_count()
 
     else:
         print('Not using distributed mode')
@@ -275,3 +278,23 @@ def init_distributed_mode(args):
     torch.distributed.barrier()
     setup_for_distributed(args.rank == 0)
 
+def pca(X, n_components):
+    # Center the data
+    X_mean = torch.mean(X, dim=0)
+    X_centered = X - X_mean
+    # u, s, vh= torch.linalg.svd(torch.tensor(X_centered))
+    u, s, vh= torch.pca_lowrank(X_centered, q=n_components)
+
+    # Compute the covariance matrix
+    # cov_matrix = torch.mm(X_centered.t(), X_centered) / (X_centered.size(0) - 1)
+    
+    # Perform eigen-decomposition
+    # eigenvalues, eigenvectors = torch.symeig(cov_matrix, eigenvectors=True)
+    
+    # Sort eigenvectors by eigenvalues
+    # _, indices = torch.sort(eigenvalues, descending=True)
+    # principal_components = eigenvectors[:, indices[:n_components]]
+
+    # red=torch.mm(X, vh)
+    # print('f')
+    return  vh, X_mean

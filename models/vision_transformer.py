@@ -1,5 +1,5 @@
 # --------------------------------------------------------
-# SimSIM
+# ROPIM
 # Based on BEIT code bases (https://github.com/microsoft/unilm/tree/master/beit)
 # --------------------------------------------------------
 
@@ -369,7 +369,7 @@ def build_vit(config):
     return model
 
 
-def build_vit_lin_eval_vit_tiny():
+def build_vit_tiny_lin_eval():
     model = VisionTransformer(
         img_size=224,
         patch_size=16,

@@ -1,5 +1,5 @@
 # --------------------------------------------------------
-# SimSIM config file
+# ROPIM config file
 # --------------------------------------------------------
 
 import os
@@ -113,7 +113,7 @@ _C.TRAIN.OPTIMIZER.BETAS = (0.9, 0.999)
 # SGD momentum
 _C.TRAIN.OPTIMIZER.MOMENTUM = 0.9
 
-# [SimMIM] Layer decay for fine-tuning
+# Layer decay for fine-tuning
 _C.TRAIN.LAYER_DECAY = 1.0
 
 # -----------------------------------------------------------------------------
@@ -175,7 +175,7 @@ _C.LOCAL_RANK = 0
 _C.dist_on_itp = False
 _C.world_size = 1
 _C.dist_url ='env://'
-# [SimMIM] path to pre-trained model
+# path to pre-trained model
 _C.PRETRAINED = ''
 
 
@@ -191,7 +191,7 @@ def _update_config_from_file(config, cfg_file):
             )
     print('=> merge config from {}'.format(cfg_file))
     config.merge_from_file(cfg_file)
-    config.freeze()
+    # config.freeze()
 
 
 def update_config(config, args):

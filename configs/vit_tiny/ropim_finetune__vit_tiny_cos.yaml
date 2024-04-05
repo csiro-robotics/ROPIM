@@ -1,11 +1,11 @@
 MODEL:
   TYPE: vit
-  NAME: simsim_finetune
+  NAME: ropim_finetune
   DROP_PATH_RATE: 0.1
   VIT:
-    EMBED_DIM: 768
+    EMBED_DIM: 192
     DEPTH: 12
-    NUM_HEADS: 12
+    NUM_HEADS: 3
     USE_APE: False
     USE_RPB: True
     USE_SHARED_RPB: False
@@ -16,12 +16,12 @@ AUG:
   AUTO_AUGMENT: 'rand-m9-mstd0.5-inc1'
 TRAIN:
   EPOCHS: 100
-  WARMUP_EPOCHS: 20
-  BASE_LR: 8e-3 #8.0e-4  #1.25e-3 # 2.5e-3 #
+  WARMUP_EPOCHS: 5
+  BASE_LR: 1e-2 # 5e-3 #8.0e-4  #1.25e-3 # 2.5e-3 #
   WARMUP_LR: 2.5e-7
   MIN_LR: 2.5e-7
   WEIGHT_DECAY: 0.05
   LAYER_DECAY: 0.65 # 0.65
 PRINT_FREQ: 100
 SAVE_FREQ: 5
-TAG: simsim_finetune__vit_base__img224
+TAG: ropim_finetune__vit_base__img224__800ep

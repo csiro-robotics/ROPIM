@@ -1,15 +1,15 @@
 # --------------------------------------------------------
-# SimSIM
+# ROPIM
 # Written by Maryam Haghighat
 # --------------------------------------------------------
 
 from .vision_transformer import build_vit
-from .simsim import build_simsim
+from .ropim import build_ropim
 
 
 def build_model(config, is_pretrain=True):
     if is_pretrain:
-        model = build_simsim(config)
+        model = build_ropim(config)
     else:
         model = build_vit(config)
     return model

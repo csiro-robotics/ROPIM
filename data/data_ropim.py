@@ -1,5 +1,5 @@
 # --------------------------------------------------------
-# SimSIM
+# ROPIM
 # Written by Maryam Haghighat
 # --------------------------------------------------------
 
@@ -52,9 +52,9 @@ class SketchGenerator:
             return None
 
         if torch.rand(1) > float(self.threshold):
-            self.sketching_ratio = .07
+            self.sketching_ratio = .25 #.07 
         else:
-            self.sketching_ratio = .14
+            self.sketching_ratio = .14 # .25
 
         self.n_size_out = int(np.ceil(self.n_size_in * self.sketching_ratio))
         sketch_mat = self.create_sketch_mat(self.n_size_in , self.n_size_out, "cpu")
@@ -67,7 +67,7 @@ class SketchGenerator:
         return sketch_invsketch
 
 
-class SimSIMTransform:
+class ROPIMTransform:
     def __init__(self, config):
         self.transform_img = T.Compose([
             T.Lambda(lambda img: img.convert('RGB') if img.mode != 'RGB' else img),
@@ -109,8 +109,8 @@ def collate_fn(batch):
         return ret
 
 
-def build_loader_simsim(config, logger):
-    transform = SimSIMTransform(config)
+def build_loader_ropim(config, logger):
+    transform = ROPIMTransform(config)
     logger.info(f'Pre-train data transform:\n{transform}')
 
     dataset = ImageFolder(config.DATA.DATA_PATH, transform)

@@ -1,5 +1,5 @@
 # --------------------------------------------------------
-# SimSIM
+# ROPIM
 # --------------------------------------------------------
 
 from functools import partial
@@ -9,7 +9,7 @@ from timm.models.layers import trunc_normal_
 from .vision_transformer import VisionTransformer
 
 
-class VisionTransformerForSimSIM(VisionTransformer):
+class VisionTransformerForROPIM(VisionTransformer):
     def __init__(self, sp=False, **kwargs):
         super().__init__(**kwargs)
         assert self.num_classes == 0
@@ -48,7 +48,7 @@ class VisionTransformerForSimSIM(VisionTransformer):
         return x
 
 
-class SimSIM(nn.Module):
+class ROPIM(nn.Module):
     def __init__(self, encoder, encoder_stride):
         super().__init__()
         self.encoder = encoder
@@ -83,8 +83,8 @@ class SimSIM(nn.Module):
         return {}
 
 
-def build_simsim(config):
-    encoder = VisionTransformerForSimSIM(
+def build_ropim(config):
+    encoder = VisionTransformerForROPIM(
     sp=config.DATA.sp,
     img_size=config.DATA.IMG_SIZE,
     patch_size=config.MODEL.VIT.PATCH_SIZE,
@@ -105,6 +105,6 @@ def build_simsim(config):
     use_mean_pooling=config.MODEL.VIT.USE_MEAN_POOLING)
     encoder_stride = config.MODEL.VIT.PATCH_SIZE
 
-    model = SimSIM(encoder=encoder, encoder_stride=encoder_stride)
+    model = ROPIM(encoder=encoder, encoder_stride=encoder_stride)
 
     return model

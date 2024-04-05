@@ -1,29 +1,29 @@
 MODEL:
   TYPE: vit
-  NAME: simsim_pretrain
+  NAME: ropim_pretrain
   DROP_PATH_RATE: 0.1
   VIT:
-    EMBED_DIM: 192
-    PATCH_SIZE: 16 # (Org: 16, ADIOS setting: 4)
+    EMBED_DIM: 768
+    PATCH_SIZE: 16
     DEPTH: 12
-    NUM_HEADS: 3
+    NUM_HEADS: 12
     USE_APE: False
     USE_RPB: False
     USE_SHARED_RPB: True
     USE_MEAN_POOLING: False
 DATA:
-  IMG_SIZE: 64 #(Org: 224, ADIOS setting: 64)
+  IMG_SIZE: 224
 
 TRAIN:
   EPOCHS: 800
   WARMUP_EPOCHS: 10
-  BASE_LR: 1e-3
+  BASE_LR: 1.5e-4 
   WARMUP_LR: 5e-7
   WEIGHT_DECAY: 0.05
   LR_SCHEDULER:
-    NAME: 'multistep'
-    GAMMA: 0.1
-    MULTISTEPS: [700,]
+    NAME: 'cosine'
+  OPTIMIZER:
+    BETAS: (0.9, 0.95)
 PRINT_FREQ: 100
 SAVE_FREQ: 5
-TAG: simmim_pretrain__vit_tiny__img224__800ep
+TAG: ropim_pretrain__vit_base__img224

@@ -1,10 +1,10 @@
 MODEL:
   TYPE: vit
-  NAME: simsim_finetune
+  NAME: ropim_finetune
   DROP_PATH_RATE: 0.1
   VIT:
     EMBED_DIM: 192
-    PATCH_SIZE: 4 # (Org: 16, ADIOS setting: 4)
+    PATCH_SIZE: 16 # (Org: 16, ADIOS setting: 4)
     DEPTH: 12
     NUM_HEADS: 3
     USE_APE: False
@@ -12,7 +12,7 @@ MODEL:
     USE_SHARED_RPB: False
     USE_MEAN_POOLING: True
 DATA:
-  IMG_SIZE: 64 #(Org: 224, ADIOS setting: 64)
+  IMG_SIZE: 224 #(Org: 224, ADIOS setting: 64)
 
 AUG:
   COLOR_JITTER: .4
