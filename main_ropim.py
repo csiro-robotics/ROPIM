@@ -22,7 +22,6 @@ from logger import create_logger
 from utils import load_checkpoint, save_checkpoint, get_grad_norm, auto_resume_helper, init_distributed_mode
 import torch.nn.functional as F
 from torchvision import transforms as T
-import kornia.filters.sobel as sobel
 
 def str2bool(v):
   return v.lower() in ('true', '1')
