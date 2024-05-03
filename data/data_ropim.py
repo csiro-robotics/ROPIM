@@ -13,7 +13,8 @@ from torch.utils.data import DataLoader, DistributedSampler
 from torch.utils.data._utils.collate import default_collate
 from torchvision.datasets import ImageFolder
 from timm.data import IMAGENET_DEFAULT_MEAN, IMAGENET_DEFAULT_STD
-###### SKETCH ########
+
+###### SKETCHING ########
 
 class SketchGenerator:
     def __init__(self,  input_size, threshold):
@@ -52,18 +53,17 @@ class SketchGenerator:
             return None
 
         if torch.rand(1) > float(self.threshold):
-            self.sketching_ratio = .25 #.07 
+            self.sketching_ratio = .14 # 
+            # Note: Since we are applying sketching across spatial tokens, the sketching ratio should be divisible to the number of tokens=> with 14x14 tokens, we can have sketching ratio 1/7, but not 1/5.
+            # However, with a probabilitic approach we have combined scenarios to reach other effective sketching ratios, e.g. 
+            # e.g. threshold=.5 and sketching_ratio1=1/7 and sketching_ratio2=1/14  =>  effective sketching_ratio=.5*1/7+.5*1/4=.2
         else:
-            self.sketching_ratio = .14 # .25
+            self.sketching_ratio = .14 # 
 
         self.n_size_out = int(np.ceil(self.n_size_in * self.sketching_ratio))
         sketch_mat = self.create_sketch_mat(self.n_size_in , self.n_size_out, "cpu")
         sketch_invsketch =torch.matmul(sketch_mat, sketch_mat.t() * self.sketching_ratio)
 
-        ## ADDED to try
-        # DC_mat = torch.matmul(torch.ones(int(16*16*3), self.n_size_in).float(), sketch_invsketch.float())
-        # sketch_invsketch = sketch_invsketch / DC_mat.mean()
-        #####
         return sketch_invsketch
 
 
@@ -77,9 +77,7 @@ class ROPIMTransform:
             T.Normalize(mean=torch.tensor(IMAGENET_DEFAULT_MEAN),std=torch.tensor(IMAGENET_DEFAULT_STD)),
         ])
  
-        if config.MODEL.TYPE == 'swin':
-            model_patch_size=config.MODEL.SWIN.PATCH_SIZE
-        elif config.MODEL.TYPE == 'vit':
+        if config.MODEL.TYPE == 'vit':
             model_patch_size=config.MODEL.VIT.PATCH_SIZE
         else:
             raise NotImplementedError

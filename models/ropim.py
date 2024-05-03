@@ -1,12 +1,13 @@
 # --------------------------------------------------------
 # ROPIM
+# Written by Maryam Haghighat
 # --------------------------------------------------------
 
-from functools import partial
 import torch
 import torch.nn as nn
 from timm.models.layers import trunc_normal_
 from .vision_transformer import VisionTransformer
+from functools import partial
 
 
 class VisionTransformerForROPIM(VisionTransformer):

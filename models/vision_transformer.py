@@ -1,11 +1,11 @@
 # --------------------------------------------------------
 # ROPIM
-# Based on BEIT code bases (https://github.com/microsoft/unilm/tree/master/beit)
+# Based on (https://github.com/microsoft/unilm/tree/master/beit)
+# Written by Maryam Haghighat
 # --------------------------------------------------------
 
 import math
 from functools import partial
-
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -369,44 +369,3 @@ def build_vit(config):
     return model
 
 
-def build_vit_tiny_lin_eval():
-    model = VisionTransformer(
-        img_size=224,
-        patch_size=16,
-        in_chans=3,
-        num_classes=0,
-        embed_dim=192,
-        depth=12,
-        num_heads=3,
-        mlp_ratio=4.,
-        qkv_bias=True,
-        drop_rate=0.0,
-        drop_path_rate=0.1,
-        norm_layer=partial(nn.LayerNorm, eps=1e-6),
-        init_values=0.1,
-        use_abs_pos_emb=False,
-        use_rel_pos_bias=True,
-        use_shared_rel_pos_bias=False,
-        use_mean_pooling=True)
-    return model
-
-def build_vit_base_lin_eval():
-    model = VisionTransformer(
-        img_size=224,
-        patch_size=16,
-        in_chans=3,
-        num_classes=0,
-        embed_dim=768,
-        depth=12,
-        num_heads=12,
-        mlp_ratio=4.,
-        qkv_bias=True,
-        drop_rate=0.0,
-        drop_path_rate=0.1,
-        norm_layer=partial(nn.LayerNorm, eps=1e-6),
-        init_values=0.1,
-        use_abs_pos_emb=False,
-        use_rel_pos_bias=True,
-        use_shared_rel_pos_bias=False,
-        use_mean_pooling=True)
-    return model

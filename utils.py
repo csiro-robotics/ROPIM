@@ -1,6 +1,7 @@
 # --------------------------------------------------------
 # ROPIM
-# Partly based on SimMIM code: https://github.com/microsoft/SimMIM
+# Based on https://github.com/microsoft/SimMIM
+# Written by Maryam Haghighat
 # --------------------------------------------------------
 
 import os
@@ -8,10 +9,8 @@ import torch
 import torch.distributed as dist
 import numpy as np
 from scipy import interpolate
-import hostlist
 
 try:
-    # noinspection PyUnresolvedReferences
     from apex import amp
 except ImportError:
     amp = None
@@ -196,7 +195,6 @@ def remap_pretrained_keys_vit(model, checkpoint_model, logger):
 
 
 
-
 def is_dist_avail_and_initialized():
     if not dist.is_available():
         return False
@@ -277,24 +275,3 @@ def init_distributed_mode(args):
                                          world_size=args.world_size, rank=args.rank)
     torch.distributed.barrier()
     setup_for_distributed(args.rank == 0)
-
-def pca(X, n_components):
-    # Center the data
-    X_mean = torch.mean(X, dim=0)
-    X_centered = X - X_mean
-    # u, s, vh= torch.linalg.svd(torch.tensor(X_centered))
-    u, s, vh= torch.pca_lowrank(X_centered, q=n_components)
-
-    # Compute the covariance matrix
-    # cov_matrix = torch.mm(X_centered.t(), X_centered) / (X_centered.size(0) - 1)
-    
-    # Perform eigen-decomposition
-    # eigenvalues, eigenvectors = torch.symeig(cov_matrix, eigenvectors=True)
-    
-    # Sort eigenvectors by eigenvalues
-    # _, indices = torch.sort(eigenvalues, descending=True)
-    # principal_components = eigenvectors[:, indices[:n_components]]
-
-    # red=torch.mm(X, vh)
-    # print('f')
-    return  vh, X_mean

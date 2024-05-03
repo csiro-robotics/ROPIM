@@ -1,15 +1,14 @@
 # --------------------------------------------------------
 # ROPIM
-# cite: https://github.com/microsoft/SimMIM
+# Based on https://github.com/microsoft/SimMIM
+# Written by Maryam Haghighat
 # --------------------------------------------------------
-
-from collections import Counter
-from bisect import bisect_right
 
 import torch
 from timm.scheduler.cosine_lr import CosineLRScheduler
 from timm.scheduler.step_lr import StepLRScheduler
 from timm.scheduler.scheduler import Scheduler
+from bisect import bisect_right
 
 
 def build_scheduler(config, optimizer, n_iter_per_epoch):

@@ -1,5 +1,6 @@
 # --------------------------------------------------------
 # ROPIM
+# Based on https://github.com/microsoft/SimMIM
 # Written by Maryam Haghighat
 # --------------------------------------------------------
 
@@ -90,8 +91,7 @@ def build_dataset(is_train, config, logger):
         else:
             split='val'
         dataset=INat2017(root=config.DATA.DATA_PATH, split=split, transform=transform)
-        nb_classes= 5089
-        # nb_classes=13    
+        nb_classes= 5089  
 
     elif config.DATA.DATASET == 'cifar100':
         dataset = datasets.CIFAR100(root=config.DATA.DATA_PATH,  train=is_train, download=False, transform=transform)
@@ -119,7 +119,6 @@ def build_dataset_CIFAR(is_train, config, logger):
 def build_transform(is_train, config):
     resize_im = config.DATA.IMG_SIZE > 32
     if is_train:
-        # this should always dispatch to transforms_imagenet_train
         transform = create_transform(
             input_size=config.DATA.IMG_SIZE,
             is_training=True,
@@ -132,8 +131,7 @@ def build_transform(is_train, config):
         )
 
         if not resize_im:
-            # replace RandomResizedCropAndInterpolation with
-            # RandomCrop
+            # replace RandomResizedCropAndInterpolation with RandomCrop
             transform.transforms[0] = transforms.RandomCrop(config.DATA.IMG_SIZE, padding=4)
         return transform
 
@@ -182,8 +180,7 @@ class INat2017(VisionDataset):
         self.annos = all_annos['annotations']
         self.images = all_annos['images']
         print('LEN of CAT IDs:', len(self.cat_ids))
-        # self.cat_ids = {'Plantae': 0, 'Insecta': 1, 'Aves': 2, 'Reptilia': 3, 'Mammalia': 4, 'Fungi':5, 'Amphibia': 6,
-        #                 'Mollusca': 7, 'Animalia': 8, 'Arachnida': 9, 'Actinopterygii': 10, 'Chromista': 11, 'Protozoa': 12}
+
 
     def __getitem__(self, index):
         path = os.path.join(self.root, self.images[index]['file_name'])

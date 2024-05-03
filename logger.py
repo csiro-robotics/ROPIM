@@ -1,5 +1,7 @@
 # --------------------------------------------------------
 # ROPIM
+# Based on https://github.com/microsoft/SimMIM
+# Written by Maryam Haghighat
 # --------------------------------------------------------
 
 import os

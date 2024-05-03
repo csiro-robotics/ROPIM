@@ -1,6 +1,7 @@
 # --------------------------------------------------------
 # ROPIM
-# cite: https://github.com/microsoft/SimMIM
+# Based on https://github.com/microsoft/SimMIM
+# Written by Maryam Haghighat
 # --------------------------------------------------------
 
 import json

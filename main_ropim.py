@@ -1,8 +1,8 @@
 # --------------------------------------------------------
 # ROPIM
+# Based on https://github.com/microsoft/SimMIM
 # Written by Maryam Haghighat
 # --------------------------------------------------------
-
 
 import os
 import datetime
@@ -21,7 +21,6 @@ from optimizer import build_optimizer
 from logger import create_logger
 from utils import load_checkpoint, save_checkpoint, get_grad_norm, auto_resume_helper, init_distributed_mode
 import torch.nn.functional as F
-from torchvision.utils import save_image
 from torchvision import transforms as T
 import kornia.filters.sobel as sobel
 
@@ -149,32 +148,9 @@ def train_one_epoch(config, model, data_loader, optimizer, epoch, lr_scheduler):
         eye_mat = torch.eye(sp_sketch_invsketch.shape[1]).cuda(non_blocking=True)
         C_Sketch_invSketch = eye_mat - sp_sketch_invsketch
 
-
-        # # Division option 1
-        # model_loss = torch.matmul(model_loss.flatten(2), C_Sketch_invSketch) / (
-        #         C_Sketch_invSketch.sum((1, 2)).abs().view(-1, 1, 1) + 1e-5)
-        # model_loss = model_loss.abs().mean()*200 #/ config.DATA.BATCH_SIZE / config.MODEL.VIT.IN_CHANS
-
-
-        # No division
         model_loss = torch.matmul(model_loss.flatten(2), C_Sketch_invSketch)
-        model_loss = model_loss.abs().mean() #/ config.DATA.BATCH_SIZE / config.MODEL.VIT.IN_CHANS
+        model_loss = model_loss.abs().mean() 
        
-        # Division option 2
-        # model_loss = torch.matmul(model_loss.flatten(2), C_Sketch_invSketch)
-        # model_loss = model_loss.abs().mean() * 40000 / (
-        #         C_Sketch_invSketch.mean().abs() + 1e-5)
-        # / config.DATA.BATCH_SIZE / config.MODEL.VIT.IN_CHANS
-        # torch.numel(C_Sketch_invSketch[0])
-
-        # Division option 3
-        # C_Sketch_invSketch.sum().abs() + 1e-5)
-
-        # Try DC mat
-        # DC_mat=torch.matmul(torch.ones(model_loss.flatten(2).size()).cuda(non_blocking=True), C_Sketch_invSketch).mean((1,2))
-        # model_loss = torch.matmul(model_loss.flatten(2), C_Sketch_invSketch) / (
-        #         DC_mat.view(-1,1,1) + 1e-5)  # (C_Sketch_invSketch.sum((1,2)).abs()+1e-5)
-        ##########################
 
         optimizer.zero_grad()
         model_loss.backward()
@@ -190,17 +166,6 @@ def train_one_epoch(config, model, data_loader, optimizer, epoch, lr_scheduler):
         batch_time.update(time.time() - end)
         end = time.time()
         torch.distributed.barrier()
-
-        # save images for further investigation
-        # if dist.get_rank() == 0 and idx == num_steps - 1:
-        #     mean = torch.tensor([0.485, 0.456, 0.406], dtype=torch.float32)
-        #     std = torch.tensor([0.229, 0.224, 0.225], dtype=torch.float32)
-        #     unnormalize = T.Normalize((-mean / std), (1.0 / std))
-        #
-        #     a1 = img_org[0, :, :, :].detach().clone()
-        #     save_image(torch.clamp(unnormalize(a1), 0, 1), f'imgs/{config.TAG}/org_img_it{idx}_epoch{epoch}.png')
-        #     a2 = img_rec[0, :, :, :].detach().clone()
-        #     save_image(torch.clamp(unnormalize(a2), 0, 1), f'imgs/{config.TAG}/img_rec_it{idx}_epoch{epoch}.png')
 
 
     if idx % config.PRINT_FREQ == 0 or idx == num_steps - 1:
@@ -233,7 +198,6 @@ if __name__ == '__main__':
         rank = -1
         world_size = -1
     torch.cuda.set_device(config.LOCAL_RANK)
-    # os.environ["NCCL_ASYNC_ERROR_HANDLING"]=1 timeout=datetime.timedelta(seconds=3600),
     torch.distributed.init_process_group(backend='nccl', init_method='env://',  world_size=world_size, rank=rank)
     torch.distributed.barrier()
 
@@ -241,17 +205,6 @@ if __name__ == '__main__':
     torch.manual_seed(seed)
     np.random.seed(seed)
     cudnn.benchmark = True
-
-
-# if __name__ == '__main__':
-#     _, config = parse_option()
-#     init_distributed_mode(config)
-#     device = torch.device('cuda')
-
-#     seed = config.SEED + dist.get_rank()
-#     torch.manual_seed(seed)
-#     np.random.seed(seed)
-#     cudnn.benchmark = True
 
     # Apply a linear learning rate rule based on total batch size, Note: not optimal
     linear_scaled_lr = config.TRAIN.BASE_LR * config.DATA.BATCH_SIZE * dist.get_world_size() / 512.0
