@@ -26,4 +26,4 @@ TRAIN:
     BETAS: (0.9, 0.95)
 PRINT_FREQ: 100
 SAVE_FREQ: 5
-TAG: ropim_pretrain__vit_base__img224
+TAG: ropim_pretrain__vit_small
