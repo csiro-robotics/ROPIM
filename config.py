@@ -31,7 +31,7 @@ _C.DATA.PIN_MEMORY = True
 _C.DATA.NUM_WORKERS = 8
 
 # Sketching ratio
-_C.DATA.Spatial_Sketching_Threshold = .5
+_C.DATA.spatial_sketching_threshold = -1
 _C.DATA.eye_sp_sketch = False
 _C.DATA.sp1 = False
 
@@ -238,8 +238,8 @@ def update_config(config, args):
 
 
     # set sketching params
-    if _check_args('Spatial_Sketching_Threshold'):
-        config.DATA.Spatial_Sketching_Threshold = args.Spatial_Sketching_Threshold
+    if _check_args('spatial_sketching_threshold'):
+        config.DATA.spatial_sketching_threshold = args.spatial_sketching_threshold
         config.DATA.sp = args.sp
         config.DATA.eye_sp_sketch = args.eye_sp_sketch
 

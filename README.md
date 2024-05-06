@@ -38,14 +38,18 @@ pip install -r requirements.txt
 ```
 ### Pre-training with ROPIM
 For pre-training models with `ROPIM`, run:
+                   
 ```bash
-python -m torch.distributed.launch --nproc_per_node <num-of-gpus-to-use> main_ropim.py \ 
---cfg <config-file> --data-path <imagenet-path>/train [--batch-size <batch-size-per-gpu> --output <output-directory> --tag <job-tag>]
+python3 -m torch.distributed.launch --nnodes <num-of-nodes> --nproc_per_node <num-of-gpus-per-node> --node_rank <node-rank> --master_addr <hostname> \
+main_ropim.py --world_size <total-num-of-gpus> \ 
+--cfg <config-file> --data-path <imagenet-path>/train [--batch-size <batch-size-per-gpu> --output <output-directory> --tag <job-tag> --spatial_sketching_threshold <threshol-for-sketching_ratio>]
 ```
 ### Fine-tuning pre-trained models
 For fine-tuning models pre-trained by `ROPIM`, run:
+
 ```bash
-python -m torch.distributed.launch --nproc_per_node <num-of-gpus-to-use> main_finetune.py \ 
+python3 -m torch.distributed.launch --nnodes <num-of-nodes> --nproc_per_node <num-of-gpus-per-node> --node_rank <node-rank> --master_addr <hostname> \
+main_finetune.py --world_size <total-num-of-gpus> \ 
 --cfg <config-file> --data-path <imagenet-path> --pretrained <pretrained-ckpt> [--batch-size <batch-size-per-gpu> --output <output-directory> --tag <job-tag>]
 ```
 

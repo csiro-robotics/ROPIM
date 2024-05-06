@@ -83,7 +83,7 @@ class ROPIMTransform:
             raise NotImplementedError
 
         self.SpacialSketchGenerator = SketchGenerator(
-            input_size=(config.DATA.IMG_SIZE/model_patch_size)**2, threshold=config.DATA.Spatial_Sketching_Threshold)
+            input_size=(config.DATA.IMG_SIZE/model_patch_size)**2, threshold=config.DATA.spatial_sketching_threshold)
 
 
     def __call__(self, img):

@@ -54,7 +54,7 @@ def parse_option():
 
     parser.add_argument('--tag', help='tag of experiment')
     # Sketching
-    parser.add_argument('--Spatial_Sketching_Threshold', type=float, default=0)
+    parser.add_argument('--spatial_sketching_threshold', type=float, default=-1)
     parser.add_argument('--sp', type= str2bool, default=True, help='apply spatial sketching')
     parser.add_argument('--eye_sp_sketch', type= str2bool, default=False)
     parser.add_argument('--amp-opt-level', type=str, default='O0', choices=['O0', 'O1', 'O2'],
