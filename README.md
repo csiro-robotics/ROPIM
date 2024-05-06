@@ -18,6 +18,36 @@ year={2024},
 url={https://openreview.net/forum?id=z4Hcegjzph}
 }
 ```
+## Usage
+
+Setup conda environment and install required packages:
+```bash
+# Create environment
+conda create -n ropim python=3.8 -y
+conda activate ropim
+
+# Install requirements
+conda install pytorch==1.10.1 torchvision==0.11.2 torchaudio==0.10.1 cudatoolkit=11.3 -c pytorch -c conda-forge
+
+# Clone SimMIM
+git clone https://github.com/csiro-robotics/ROPIM
+cd ROPIM
+
+# Install other requirements
+pip install -r requirements.txt
+```
+### Pre-training with ROPIM
+For pre-training models with `ROPIM`, run:
+```bash
+python -m torch.distributed.launch --nproc_per_node <num-of-gpus-to-use> main_ropim.py \ 
+--cfg <config-file> --data-path <imagenet-path>/train [--batch-size <batch-size-per-gpu> --output <output-directory> --tag <job-tag>]
+```
+### Fine-tuning pre-trained models
+For fine-tuning models pre-trained by `ROPIM`, run:
+```bash
+python -m torch.distributed.launch --nproc_per_node <num-of-gpus-to-use> main_finetune.py \ 
+--cfg <config-file> --data-path <imagenet-path> --pretrained <pretrained-ckpt> [--batch-size <batch-size-per-gpu> --output <output-directory> --tag <job-tag>]
+```
 
 ## Acknowledgement
 
