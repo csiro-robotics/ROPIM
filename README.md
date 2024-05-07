@@ -1,4 +1,7 @@
 # ROPIM: Pre-training with Random Orthogonal Projection Image Modeling
+
+[ICLR 2024 Spotlight] The official repository of Self-Supervised Learning methods "ROPIM", [Pre-training with Random Orthogonal Projection Image Modeling](https://openreview.net/forum?id=z4Hcegjzph)
+
 ROPIM is a self-supervised learning technique based on count sketching, which  reduces local semantic information under the bounded noise variance. While  Masked Image Modelling (MIM) introduces Binary noise, ROPIM proposes a _continous_ masking strategy. 
 Continuous masking allows for larger number of masking patterns compared to binary masking.
 ![alt text](figures/ROPIM.png)
