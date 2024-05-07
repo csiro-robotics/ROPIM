@@ -13,7 +13,7 @@ If you find our work useful for your research, please consider giving a star :st
 
 ```bibtex
 @inproceedings{
-haghighat2024pretraining,
+haghighat2024ROPIM,
 title={Pre-training with Random Orthogonal Projection Image Modeling},
 author={Maryam Haghighat and Peyman Moghadam and Shaheer Mohamed and Piotr Koniusz},
 booktitle={The Twelfth International Conference on Learning Representations},
@@ -57,5 +57,7 @@ main_finetune.py --world_size <total-num-of-gpus> \
 ```
 
 ## Acknowledgement
+
+This research was funded by the Machine Learning and Artificial Intelligence Future Science Platform (MLAI FSP) and Science Digital at the Commonwealth Scientific and Industrial Research Organisation (CSIRO), Australia.
 
 This code is built using the [timm](https://github.com/huggingface/pytorch-image-models) library, the [BEiT](https://github.com/microsoft/unilm/tree/master/beit) repository and the [SimMIM](https://github.com/microsoft/SimMIM) repository.
